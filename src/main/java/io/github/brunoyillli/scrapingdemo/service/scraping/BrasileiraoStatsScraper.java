@@ -1,4 +1,4 @@
-package io.github.brunoyillli.scrapingdemo.controller;
+package io.github.brunoyillli.scrapingdemo.service.scraping;
 
 import java.io.IOException;
 import java.net.URL;
@@ -8,18 +8,20 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Component;
 
 import io.github.brunoyillli.scrapingdemo.model.Time;
 
-public class ScrapingController {
+@Component
+public class BrasileiraoStatsScraper {
 
-	public ScrapingController() {
+	public BrasileiraoStatsScraper() {
 		super();
 	}
 
-	public void raspagemClassificacaoBrasileirao(String urlStr) throws IOException {
-		List<Time> brasileirao2022 = new ArrayList<>();
-		URL url = new URL(urlStr);
+	public List<Time> raspagemClassificacaoGeral(String ano) throws IOException {
+		List<Time> timesBrasileirao = new ArrayList<>();
+		URL url = new URL("https://pt.besoccer.com/competicao/tabela/serie_a_brazil/"+ ano);
 		Document doc = Jsoup.parse(url, 30000);
 		
 		for(int i = 2; i <= 21 ; i++) {
@@ -32,12 +34,13 @@ public class ScrapingController {
 			time.setGolsMarcados(golsMarcadosTime(doc, i));
 			time.setSaldoGols(saldoDeGolsTime(doc, i));
 			time.setGolsContra(golsContraTime(doc, i));
-			time.setClassificacao(String.valueOf(i));
+			time.setClassificacao(String.valueOf(i-1));
 			time.setPartidasJogadas(partidasJogadas(doc, i));
 			time.setVitorias(calcularVitorias(time));
-			brasileirao2022.add(time);
+			timesBrasileirao.add(time);
 			System.out.println(time.toString());
 		}
+		return timesBrasileirao;
 	}
 
 	private String calcularVitorias(Time time) {

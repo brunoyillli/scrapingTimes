@@ -8,12 +8,15 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import io.github.brunoyillli.scrapingdemo.model.Time;
 
 @Component
 public class BrasileiraoStatsScraper {
+    private static final Logger logger = LoggerFactory.getLogger(BrasileiraoStatsScraper.class);
 
 	public BrasileiraoStatsScraper() {
 		super();
@@ -38,7 +41,7 @@ public class BrasileiraoStatsScraper {
 			time.setPartidasJogadas(partidasJogadas(doc, i));
 			time.setVitorias(calcularVitorias(time));
 			timesBrasileirao.add(time);
-			System.out.println(time.toString());
+			logger.info(time.toString());
 		}
 		return timesBrasileirao;
 	}

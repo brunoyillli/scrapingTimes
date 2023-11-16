@@ -13,7 +13,7 @@ import io.github.brunoyillli.scrapingdemo.model.Time;
 import io.github.brunoyillli.scrapingdemo.service.scraping.BrasileiraoStatsScraper;
 
 @RestController
-@RequestMapping("/brasileirao")
+@RequestMapping("/campeonatos")
 public class BrasileiraoResource {
 
 	@Autowired

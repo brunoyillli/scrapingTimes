@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.brunoyillli.scrapingdemo.model.Time;
-import io.github.brunoyillli.scrapingdemo.service.scraping.BrasileiraoStatsScraper;
+import io.github.brunoyillli.scrapingdemo.service.scraping.CampeonatosStatsScraper;
 
 @RestController
 @RequestMapping("/campeonatos")
-public class BrasileiraoResource {
+public class CampeonatosResource {
 
 	@Autowired
-	private BrasileiraoStatsScraper scraper;
+	private CampeonatosStatsScraper scraper;
 
 
 	@GetMapping("/classificacao")
-	public List<Time> getClassificacaoGeral(@RequestParam String ano) throws IOException {
-		return scraper.raspagemClassificacaoGeral(ano);
+	public List<Time> getClassificacaoGeral(@RequestParam String campeonato, @RequestParam String ano) throws IOException {
+		return scraper.raspagemClassificacaoGeral(campeonato, ano);
 	}
 }

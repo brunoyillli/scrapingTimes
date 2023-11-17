@@ -12,26 +12,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import io.github.brunoyillli.scrapingdemo.model.Campeonato;
 import io.github.brunoyillli.scrapingdemo.model.Time;
-import io.github.brunoyillli.scrapingdemo.service.BrasileiraoService;
+import io.github.brunoyillli.scrapingdemo.service.CampeonatoService;
 
 @Component
-public class BrasileiraoStatsScraper {
-    private static final Logger logger = LoggerFactory.getLogger(BrasileiraoStatsScraper.class);
+public class CampeonatosStatsScraper {
+    private static final Logger logger = LoggerFactory.getLogger(CampeonatosStatsScraper.class);
 
-    private final BrasileiraoService brasileiraoService;
+    private final CampeonatoService campeonatoService;
     
-	public BrasileiraoStatsScraper(BrasileiraoService brasileiraoService) {
-		this.brasileiraoService = brasileiraoService;
+	public CampeonatosStatsScraper(CampeonatoService campeonatoService) {
+		this.campeonatoService = campeonatoService;
 	}
 
-	public List<Time> raspagemClassificacaoGeral(String ano) throws IOException {
-		List<Time> timesBrasileirao = new ArrayList<>();
-		URL url = new URL("https://pt.besoccer.com/competicao/tabela/serie_a_brazil/"+ ano);
+	public List<Time> raspagemClassificacaoGeral(String campeonato, String ano) throws IOException {
+		List<Time> timesCampeonato = new ArrayList<>();
+		URL url = new URL("https://pt.besoccer.com/competicao/tabela/" + campeonato+ "/"+ ano);
 		Document doc = Jsoup.parse(url, 30000);
 		int tamanho = tamanhoTabelaCampeonato(doc);
 		for(int i = 2; i <= tamanho ; i++) {
 			Time time = new Time();
+			Campeonato campeonatoDoTime = new Campeonato();
 			time.setNome(nomeTime(doc, i));
 			time.setPontos(pontosTime(doc,i));
 			time.setJogos(jogosTime(doc, i));
@@ -43,12 +45,13 @@ public class BrasileiraoStatsScraper {
 			time.setClassificacao(String.valueOf(i-1));
 			time.setPartidasJogadas(partidasJogadas(doc, i));
 			time.setVitorias(calcularVitorias(time));
-			time.setCampeonato(campeonatoJogado(doc));
-			time.setAno(ano);
-			timesBrasileirao.add(time);
+			campeonatoDoTime.setNome(campeonatoJogado(doc));
+			campeonatoDoTime.setAno(ano);
+			time.setCampeonato(campeonatoDoTime);
+			timesCampeonato.add(time);
 			logger.info(time.toString());
 		}
-		List<Time> timeSalvos = brasileiraoService.saveAllTimes(timesBrasileirao);
+		List<Time> timeSalvos = campeonatoService.saveAllTimes(timesCampeonato);
 		return timeSalvos;
 	}
 
